@@ -1,1 +1,40 @@
-
+public class EinsteinChatBotController { 
+ 
+    public class CaseOutput { 
+     
+        @InvocableVariable( required=true ) 
+        public String sCaseNumber; 
+        @InvocableVariable( required=true ) 
+        public String sStatus; 
+    } 
+     
+    public class CaseInput { 
+     
+        @InvocableVariable( required=true ) 
+        public String caseSubject; 
+         
+    } 
+ 
+    @InvocableMethod(label='Get Case Status') 
+    public static List < CaseOutput > fetchCaseStatus( List < CaseInput > listCaseInputs ) { 
+     
+        List < CaseOutput > objOutputs = new List < CaseOutput >();
+        Set < String > listSubjects = new Set < String >(); 
+        CaseOutput objOutput = new CaseOutput(); 
+       
+        for ( CaseInput objCaseInput : listCaseInputs )
+            listSubjects.add( objCaseInput.caseSubject );
+       
+        for ( Case objCase : [ SELECT Status, CaseNumber FROM Case WHERE Subject IN: listSubjects ] ) {
+           
+            objOutput.sStatus = objOutput.sStatus == null ? objCase.Status : ( objOutput.sStatus + ', ' + objCase.Status ) ;
+            objOutput.sCaseNumber = objOutput.sCaseNumber == null ? objCase.CaseNumber : ( objOutput.sCaseNumber + ', ' + objCase.CaseNumber ) ; 
+           
+        }
+                  
+        objOutputs.add( objOutput );                     
+        return objOutputs; 
+     
+    } 
+ 
+}
