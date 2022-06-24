@@ -1,9 +1,9 @@
-public class EinsteinChatBotController { 
+public class EinsteinBot_GetCaseStatusandSubject { 
  
     public class CaseOutput { 
      
         @InvocableVariable( required=true ) 
-        public String sCaseNumber; 
+        public String cSubject;
         @InvocableVariable( required=true ) 
         public String sStatus; 
     } 
@@ -11,28 +11,28 @@ public class EinsteinChatBotController {
     public class CaseInput { 
      
         @InvocableVariable( required=true ) 
-        public String caseSubject; 
+        public String CaseNumber;
          
     } 
  
-    @InvocableMethod(label='Get Case Status') 
+    @InvocableMethod(label='Get Case Status and Subject') 
     public static List < CaseOutput > fetchCaseStatus( List < CaseInput > listCaseInputs ) { 
      
         List < CaseOutput > objOutputs = new List < CaseOutput >();
-        Set < String > listSubjects = new Set < String >(); 
+        Set < String > listcaseNumber = new Set < String >(); 
         CaseOutput objOutput = new CaseOutput(); 
        
         for ( CaseInput objCaseInput : listCaseInputs )
-            listSubjects.add( objCaseInput.caseSubject );
+            listcaseNumber.add( objCaseInput.CaseNumber );
        
-        for ( Case objCase : [ SELECT Status, CaseNumber FROM Case WHERE Subject IN: listSubjects ] ) {
+        for ( Case objCase : [ SELECT Status, Subject FROM Case WHERE CaseNumber IN: listcaseNumber ] ) {
            
             objOutput.sStatus = objOutput.sStatus == null ? objCase.Status : ( objOutput.sStatus + ', ' + objCase.Status ) ;
-            objOutput.sCaseNumber = objOutput.sCaseNumber == null ? objCase.CaseNumber : ( objOutput.sCaseNumber + ', ' + objCase.CaseNumber ) ; 
+            objOutput.cSubject = objOutput.cSubject == null ? objCase.Subject : ( objOutput.cSubject + ', ' + objCase.Subject ) ; 
            
         }
                   
-        objOutputs.add( objOutput );                     
+        objOutputs.add( objOutput );
         return objOutputs; 
      
     } 
